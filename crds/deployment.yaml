@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterploice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clusterploice
+  template:
+    metadata:
+      labels:
+        app: clusterploice
+    spec:
+      containers:
+        - name: clusterploice
+          image: clusterploice:1.0
+          command: ["kopf", "run", "--standalone", "cluster.py"]
