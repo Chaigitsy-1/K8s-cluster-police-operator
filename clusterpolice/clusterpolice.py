@@ -62,7 +62,7 @@ def send_notification_email(mail_list, smtp_server, smtp_port, failed_services):
 if __name__ == "__main__":
     if len(sys.argv) != 9:
         print("Usage: python clusterpolice.py <retry_count> <port> <endpoint> <namespace> <label_selector> <mail_list> <smtp_server> <smtp_port>")
-        sys.exit(1)
+        #sys.exit(1)
 
     retry_count = int(sys.argv[1])
     port = int(sys.argv[2])

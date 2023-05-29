@@ -21,25 +21,23 @@ spec:
               type: object
               properties:
                 port:
-                  type: integer
+                  type: string
                 labels:
                   type: string
                 healthcheckendpoint:
                   type: string
                 interval:
-                  type: integer
+                  type: string
                 timeout:
-                  type: integer
+                  type: string
                 retries:
-                  type: integer
+                  type: string
                 maillist:
-                  type: array
-                  items:
-                    type: string
+                  type: string
                 smtpdetails:
                   type: string
                 smtpport:
-                  type: integer
+                  type: string
   # either Namespaced or Cluster
   scope: Namespaced
   names:

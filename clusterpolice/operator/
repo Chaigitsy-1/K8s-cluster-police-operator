@@ -49,13 +49,15 @@ def on_create(body, **kwargs):
                 "template": {
 
                     "spec": {
+                        "restartPolicy": "Never",
+                        "serviceAccountName": "clusterpolice-operator-account",
                         "containers": [
                             {
 
-                                "image": "chaigistyoperator:latest",
-                                "imagePullPolicy": "IfNotPresent",
+                                "image": "breakthatpipeline/clusterpolicecronjob:latest",
+                                "imagePullPolicy": "Always",
                                 "name": "{}".format(crd_name),
-                                "args": [retries,healthcheckport, healthcheckendpoint, crd_namespace,labels, maillist, smtpdetails, smtpport ,interval, timeout]
+                                "args": [retries,healthcheckport, healthcheckendpoint, crd_namespace,labels, maillist, smtpdetails, smtpport ]#,interval, timeout]
                                 
                             }
                         ]
@@ -80,8 +82,10 @@ def on_create(body, **kwargs):
     
     try:
         logging.info("Trying Cronjob Creation")
-        v1 = client.BatchV1beta1Api()
-        ret = v1.create_namespaced_cron_job(namespace=crd_namespace, body=json.dumps(body), pretty=True, _preload_content=False, async_req=False)
+        v1 = client.BatchV1Api()
+        logging.info(body)
+        logging.info(json.dumps(body))
+        ret = v1.create_namespaced_cron_job(namespace=crd_namespace, body=body, pretty=True, _preload_content=False, async_req=False)
         ret_dict = json.loads(ret.data)
         print(f'create succeed\n{json.dumps(ret_dict)}')
         logging.info("CronJob Created")
