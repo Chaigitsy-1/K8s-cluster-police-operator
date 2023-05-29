@@ -1,7 +1,7 @@
 # K8s-cluster-police-operator
 Writing an operator which tests all the services and their healthcheck endpoints every few minutes and also will trigger mails if it sees one of the endpoint is not responding by a 200
 
-
+I have used v1.26 k8s cluster and also python client for kubernetes to write this operator
 
 So wt are few considerations here
 
