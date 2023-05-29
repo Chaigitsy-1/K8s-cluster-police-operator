@@ -2,32 +2,58 @@ import sys
 import time
 import smtplib
 from email.mime.text import MIMEText
+from email.header import Header
 from kubernetes import client, config
 import json
 import requests
+import re
 def get_services_with_label(namespace, label_selector):
     config.load_incluster_config()
     v1 = client.CoreV1Api()
     final_services=[]
     services = v1.list_service_for_all_namespaces().items
     for service in services:
-        test_data=label_selector
-        print(test_data)
-        #test_data={'app':'nginx'}
+        test_data_str=label_selector
+        print(test_data_str)
+        #test_data_dict=json.loads(test_data_str)
+        #print(test_data_dict)
+        #test_data=json.dumps(test_data_dict)
+        pattern=r'{\s*(\w+)\s*:\s*(\w+)\s*}'
+        test_data_valid=re.sub(pattern, r'{"\1":"\2"}', test_data_str)
+        #print(test_data_valid)
+        test_data_dict=json.loads(test_data_valid)
+        #print(test_data_dict)
+        test_data=test_data_valid
+        #print(test_data)
+        #print(type(test_data))
+        #print(type(test_data_dict))
+
+        #test_data1={'app':'nginx'}
+        #print(type(test_data1))
+        #if test_data1==test_data_dict:
+         #   print("hi")
+        #else:
+         #   print("bye")
+        #print(test_data1)
+        print(test_data_dict)
+
         data=service.spec.selector
         print(data)
         try:
-            for key, value in test_data.items():
+            for key, value in test_data_dict.items():
+                #print("dell")
+                #print(key)
+                #print(data[key])
                 if key not in data or data[key] != value:
                     pass
                 else:
                     final_services.append(service.metadata.name)
-        except:
-            print("exception")
-
-
-
-
+        except Exception as e:
+            print(e)
+				     
+		
+	
+	
     return final_services
 
 
@@ -56,18 +82,19 @@ def ping_service(service, port, endpoint, retry_count, smtp_mail_list, smtp_serv
                 return
         except Exception as e:
             print(f"Error pinging service {service_name}: {str(e)}")
-
+        
         if i < retry_count - 1:
             time.sleep(1)  # Wait for 1 second before retrying
         else:
             failed_services.append(service_name)
 
     if failed_services:
+
         send_notification_email(smtp_mail_list, smtp_server, smtp_port, failed_services)
 
 
 def send_notification_email(mail_list, smtp_server, smtp_port, failed_services):
-    sender = 'sender@example.com'
+    sender = 'cron@gmail.com'
     subject = 'Service Health Check Failed'
     message = f"The following services are not responding to health checks: {' '.join(failed_services)}"
 
@@ -78,6 +105,7 @@ def send_notification_email(mail_list, smtp_server, smtp_port, failed_services):
 
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
             server.sendmail(sender, mail_list, msg.as_string())
         print("Notification email sent successfully.")
     except Exception as e:
@@ -87,7 +115,7 @@ def send_notification_email(mail_list, smtp_server, smtp_port, failed_services):
 if __name__ == "__main__":
     if len(sys.argv) != 9:
         print("Usage: python clusterpolice.py <retry_count> <port> <endpoint> <namespace> <label_selector> <mail_list> <smtp_server> <smtp_port>")
-
+        
 
     retry_count = int(sys.argv[1])
     port = int(sys.argv[2])
@@ -99,13 +127,13 @@ if __name__ == "__main__":
     smtp_port = int(sys.argv[8])
     # Load the in-cluster configuration
     config.load_incluster_config()
-
+    
     # Create a Kubernetes client
     api = client.CoreV1Api()
     label_selector='{'+selector_labels+'}'
     print("labels")
     print(label_selector)
-
+	 
     # Retrieve the token from the default ServiceAccount
     token = open('/var/run/secrets/kubernetes.io/serviceaccount/token').read()
 
