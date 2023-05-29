@@ -18,6 +18,9 @@ Step3: kubectl apply -f clusterpolice/operator/rbac-op.yaml
 (remember that https://github.com/Chaigitsy-1/K8s-cluster-police-operator/blob/ec8916ef95e0b7778686f7129f431337df8c189e/clusterpolice/operator/rbac-op.yaml#LL68C1-L69C35 this shld be replaced with namespace of serviceaccount)
 
 Step4: kubectl apply -f deployment.yaml
+
 Step5: cd clusterpolice/crds
+
 Step6: kubectl apply -f crd.yaml
+
 Step7: kubectl apply -f crd-deploy.yaml (with necessary changes you want to create in deploy.yaml)
