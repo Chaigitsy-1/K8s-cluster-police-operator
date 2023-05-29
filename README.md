@@ -13,7 +13,9 @@ You guys are open to change and modify code or add functionalities in the way yo
 How to deploy and test:
 
 Step1: clone this repo
+
 Step2: cd clusterpolice/operator
+
 Step3: kubectl apply -f clusterpolice/operator/rbac-op.yaml
 (remember that https://github.com/Chaigitsy-1/K8s-cluster-police-operator/blob/ec8916ef95e0b7778686f7129f431337df8c189e/clusterpolice/operator/rbac-op.yaml#LL68C1-L69C35 this shld be replaced with namespace of serviceaccount)
 
