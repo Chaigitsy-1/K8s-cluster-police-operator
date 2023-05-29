@@ -1,0 +1,16 @@
+
+#breakthatpipeline/clusterpoliceoperator
+# Use a Python base image
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the Python script to the working directory
+COPY deploycronjob.py .
+
+# Install the necessary dependencies
+RUN pip install kopf kubernetes
+
+# Run the Kopf operator when the container starts
+CMD ["kopf", "run", "--standalone", "deploycronjob.py"]

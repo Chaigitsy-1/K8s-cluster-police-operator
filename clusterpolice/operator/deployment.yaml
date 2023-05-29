@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterpolice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clusterpolice
+  template:
+    metadata:
+      labels:
+        app: clusterpolice
+    spec:
+      serviceAccountName: clusterpolice-operator-account
+      containers:
+        - name: clusterploice
+          image: breakthatpipeline/clusterpoliceoperator
+          command: ["kopf", "run", "--standalone", "deploycronjob.py"]
